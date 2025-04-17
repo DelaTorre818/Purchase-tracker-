@@ -1,0 +1,123 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Purchase Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #d4edda;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2, h3, p {
+      text-align: center;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      margin-top: 20px;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    .track-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .track-btn:hover {
+      background: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Welcome to Your Dashboard</h2>
+  <p>Submit your purchases using the form below.<br>Your progress will be automatically updated after each submission.</p>
+
+  <div class="result" id="result">Loading progress...</div>
+
+  <h3>Purchase Submission Form</h3>
+  <iframe src="https://form.jotform.com/243560948185062"></iframe>
+
+  <!-- Clear Data Button -->
+  <button class="track-btn" onclick="clearAllData()">Clear All Data</button>
+</div>
+
+<script>
+  // Check if localStorage is available
+  function isLocalStorageAvailable() {
+    try {
+      const testKey = "test";
+      localStorage.setItem(testKey, "testValue");
+      localStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      console.error("LocalStorage is not available", e);
+      return false;
+    }
+  }
+
+  // Retrieve current progress from localStorage
+  function getProgress() {
+    let progress = localStorage.getItem("progress");
+    if (!progress) {
+      return 0; // Default to 0 if no progress has been saved
+    }
+    return parseInt(progress);
+  }
+
+  // Update progress in localStorage and display the new progress
+  function updateProgress() {
+    let currentProgress = getProgress();
+    currentProgress += 1; // Increment progress on each form submission
+    localStorage.setItem("progress", currentProgress);
+    showProgress(currentProgress); // Refresh displayed progress
+  }
+
+  // Display the progress message on the dashboard
+  function showProgress(count) {
+    const result = document.getElementById("result");
+    if (count >= 100) {
+      result.innerHTML = `You've submitted <strong>${count}</strong> purchases.<br><strong>₱300 reward unlocked!</strong>`;
+    } else {
+      result.innerHTML = `You've submitted <strong>${count}</strong> purchases.<br><strong>${100 - count}</strong> more to go for ₱300.`;
+    }
+  }
+
+  // Function to clear progress data from localStorage
+  function clearAllData() {
+    if (confirm("Are you sure you want to delete all submission data? This cannot be undone.")) {
+      localStorage.removeItem("progress"); // Clear the stored progress
+      showProgress(0); // Reset displayed progress to 0
+      alert("All data has been cleared.");
+    }
+  }
+
+  // Event listener for form submission
+  document.addEventListener("DOMContentLoaded", () => {
+    showProgress(getProgress()); // Show current progress from localStorage on page load
+  });
+</script>
+
+</body>
+</html>
